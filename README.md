@@ -1,18 +1,23 @@
 # Born on Bitcoin Block
 
-Without trusting any third parties, find the block that was mined immediately after a target time.
+Without trusting third parties, find the next block that was mined after a target time.
 
-Useful for determining what block a baby was born immediately before, but the script has other use cases too.
+Useful for determining what block a baby was born on, but the script has other use cases too.
 
-The current version is quite slow because it traverses the bitcoin blockchain as a linked list, requiring a separate RPC call for each block.
+*Note:* This current version is quite slow because it traverses the blockchain as a linked list, requiring a separate RPC call for each block.
 
-Planning a future version to use a binary search algorith to significantly speed up execution, requiring a log-base-2 of the block count number of RPC calls, which is currently ~20.
+*Todo:* Planning to significantly speed up execution in a future version useusing a binary search algoritm, requiring only a log-base-2 of the block count (about 20) of RPC calls.
 
-## Pre-requisites
+## Prerequisites
 
-- Ubuntu or other Debian-based Linux distribution
-- Bitcoin Core with a synced node
-- jq (`sudo apt install -y jq`)
+- [Ubuntu](https://ubuntu.com/tutorials/install-ubuntu-desktop#1-overview) or other Debian-based Linux distribution
+  - Should work on macOS, but haven't tested
+  - Please reach out if you can test a Windows PowerShell script.
+- [Bitcoin Core](https://github.com/bitcoin/bitcoin/releases) with a synced node
+  - Recommend version 22.0 or higher
+- [jq](https://stedolan.github.io/jq/)
+  - On Linux, install with `sudo apt install -y jq` or similar.
+  - on macOS, install with `brew install jq`.
 
 ## How to Execute The Script
 
