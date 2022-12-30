@@ -6,7 +6,7 @@ Useful for determining what block a baby was born on, but the script has other u
 
 *Note:* This current version is quite slow because it traverses the blockchain as a linked list, requiring a separate RPC call for each block.
 
-*Todo:* Planning to significantly speed up execution in a future version useusing a binary search algoritm, requiring only a log-base-2 of the block count (about 20) of RPC calls.
+*Todo:* Planning to significantly speed up execution in a future version useusing a binary search algoritm, requiring only a log-base-2 of the block count of RPC calls (about 20).
 
 ## Prerequisites
 
