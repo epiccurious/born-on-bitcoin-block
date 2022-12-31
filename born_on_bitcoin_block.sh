@@ -13,13 +13,14 @@ while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_t
 
   echo "--------"
   echo "The current block is $current_block"
-  echo "Its difficulty is $current_block_difficulty."
   echo "It was mined on $(date -d @$current_block_time), or $current_block_time."
+  echo "Its difficulty is $current_block_difficulty."
 
   if [ $current_block_time -ge $target_time ]; then
+    echo "-------- -------- --------"
     echo "You were born on block $current_block, mined on $(date -d @$current_block_time)."
-    echo "Its hash is $current_block_hash"
-    echo "The block difficulty is $$(echo $current_block_header | jq -r '.difficulty')."
+    echo "The block hash is $current_block_hash"
+    echo "The block difficulty is $current_block_difficulty."
   else
     if [ $current_block -eq $block_count ]; then
       echo "You were born in the future -_-"
