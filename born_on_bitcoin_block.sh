@@ -1,32 +1,54 @@
+# Make sure either bitcoind or bitcoin-qt are running before starting this script.
+
+# Set the Unix timestamp to target. (Default: 1234567890, or Fri Feb 13 2009 23:31:30)
 target_time=1234567890
+
+# Define the starting block for the search. (Default: 0)
 current_block=0
 
 clear
-echo "Starting the script ..."
+echo -e "Starting the script...\n\nThe timestamp is $target_time.\nThe timestamp is $(date -d @$target_time).\n"
+
+echo -n "Connecting to Bitcoin Core... "
 blockchain_info=$(~/bitcoin/bin/bitcoin-cli getblockchaininfo)
 block_count=$(echo $blockchain_info | jq '.blocks')
+echo "connected."
 
+# Set the block has and block time based the current_block
+echo -n "Finding the starting block's hash and time... "
 current_block_hash=$(~/bitcoin/bin/bitcoin-cli getblockhash $current_block)
-current_block_time=0
+current_block_time=$(~/bitcoin/bin/bitcoin-cli getblockheader $current_block_hash | jq '.time')
+echo "finished."
 
-$(echo $blockchain_info | jq '.initialblockdownload') && echo -e "ALERT: Bitcoin Core is still performing the \"initial block download\".\nALERT: This script will only search up to block height $block_count.\nALERT: Strongly recommend you wait for the chain to fully sync."
+# Display an alert if the node is still performing its initial block download
+$(echo $blockchain_info | jq '.initialblockdownload') && echo -e "\nALERT: Bitcoin Core is still performing the \"initial block download\".\nALERT: Please consider waiting for the entire blockchain to sync.\nALERT: This script will only search up to block height $block_count."
+
+# Start the search
+echo
 
 while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_time ]; do
   current_block_header=$(~/bitcoin/bin/bitcoin-cli getblockheader $current_block_hash)
   current_block_time=$(echo $current_block_header | jq -r '.time')
 
-  echo --------
-  echo "Checking block $current_block."
-  echo "It was made at $current_block_time, or $(date -d @$current_block_time)."
+  echo "Checking block $current_block, created $(date -d @$current_block_time)..."
 
   if [ $current_block_time -ge $target_time ]; then
-    echo --------------------------------
+    echo -e "\nSUCCESS\!\! Found the born on bitcon date."
     echo "Timestamp $target_time was born on block $current_block."
     echo "This block was made at $current_block_time, or $(date -d @$current_block_time)."
-    echo "It contains $(echo $current_block_header | jq -r '.nTx') transactions."
+    
+    ntx=$(echo $current_block_header | jq -r '.nTx')
+    if [ $ntx -eq 1 ]; then
+    	echo "It contains 1 transaction."
+    else
+    	echo "It contains $(echo $current_block_header | jq -r '.nTx') transactions."
+    fi
+    
+    echo "The hash is $current_block_hash."
+    
     current_block_difficulty=$(echo $current_block_header | jq -r '.difficulty')
-    echo "Its difficulty is ${current_block_difficulty%.*}."
-    echo "Its hash is $current_block_hash."
+    echo "The difficulty is ${current_block_difficulty%.*}."
+
   else
     if [ $current_block -eq $block_count ]; then
       echo "You were born in the future -_-"
