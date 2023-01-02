@@ -38,11 +38,9 @@ while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_t
     echo "This block was made at $current_block_time, or $(date -d @$current_block_time)."
     
     ntx=$(echo $current_block_header | jq -r '.nTx')
-    if [ $ntx -eq 1 ]; then
-    	echo "It contains 1 transaction."
-    else
-    	echo "It contains $(echo $current_block_header | jq -r '.nTx') transactions."
-    fi
+    echo -n "This block contains $ntx transaction"
+    [ $ntx -ne 1 ] && echo -n "s"
+    echo "."
     
     echo "The hash is $current_block_hash."
     
