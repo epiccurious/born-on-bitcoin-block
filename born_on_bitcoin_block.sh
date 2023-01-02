@@ -7,7 +7,7 @@ target_time=1234567890
 current_block=0
 
 clear
-echo -e "Starting the script...\n\nThe timestamp is $target_time.\nThe timestamp is $(date -d @$target_time).\n"
+echo -e "Starting the script...\n\nThe target timestamp is $target_time.\nThe target timestamp is $(date -d @$target_time).\n"
 
 echo -n "Connecting to Bitcoin Core... "
 blockchain_info=$(~/bitcoin/bin/bitcoin-cli getblockchaininfo)
@@ -33,7 +33,7 @@ while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_t
   echo "Checking block $current_block, created $(date -d @$current_block_time)..."
 
   if [ $current_block_time -ge $target_time ]; then
-    echo -e "\nSUCCESS\!\! Found the born on bitcon date."
+    echo -e "\nSUCCESS: Found the target block."
     echo "Timestamp $target_time was born on block $current_block."
     echo "This block was made at $current_block_time, or $(date -d @$current_block_time)."
     
