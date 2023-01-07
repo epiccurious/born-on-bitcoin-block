@@ -1,3 +1,4 @@
+#!/bin/bash
 # Make sure either bitcoind or bitcoin-qt are running before starting this script.
 
 # Set the Unix timestamp to target. (Default: 1234567890, or Fri Feb 13 2009 23:31:30)
