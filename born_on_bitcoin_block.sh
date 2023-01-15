@@ -25,9 +25,6 @@ current_block_hash=$(bitcoin-cli getblockhash $current_block)
 current_block_time=$(bitcoin-cli getblockheader $current_block_hash | jq '.time')
 echo "finished."
 
-## Display an alert if the node is still performing its initial block download
-$(echo $blockchain_info | jq '.initialblockdownload') && echo -e "\nALERT: Bitcoin Core is still performing the \"initial block download\".\nALERT: Please consider waiting for the entire blockchain to sync.\nALERT: This script will only search up to block height $header_count."
-
 ## Start the search
 echo
 
