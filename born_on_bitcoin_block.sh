@@ -16,7 +16,7 @@ echo -e "Starting the script...\n\nThe target timestamp is $target_time.\nThe ta
 
 echo -n "Connecting to Bitcoin Core... "
 blockchain_info=$(bitcoin-cli getblockchaininfo)
-header_count=$(echo $blockchain_info | jq '.headers')
+block_count=$(echo $blockchain_info | jq '.blocks')
 echo "connected."
 
 ## Set the block has and block time based the current_block
@@ -25,10 +25,13 @@ current_block_hash=$(bitcoin-cli getblockhash $current_block)
 current_block_time=$(bitcoin-cli getblockheader $current_block_hash | jq '.time')
 echo "finished."
 
+## Display an alert if the node is still performing its initial block download
+$(echo $blockchain_info | jq '.initialblockdownload') && echo -e "\nALERT: Bitcoin Core is still performing the \"initial block download\".\nALERT: Please consider waiting for the entire blockchain to sync.\nALERT: This script will only search up to block height $block_count."
+
 ## Start the search
 echo
 
-while [ $current_block -le $header_count ] && [ $current_block_time -lt $target_time ]; do
+while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_time ]; do
   current_block_header=$(bitcoin-cli getblockheader $current_block_hash)
   current_block_time=$(echo $current_block_header | jq -r '.time')
 
@@ -50,7 +53,7 @@ while [ $current_block -le $header_count ] && [ $current_block_time -lt $target_
     echo "The difficulty is ${current_block_difficulty%.*}."
 
   else
-    if [ $current_block -eq $header_count ]; then
+    if [ $current_block -eq $block_count ]; then
       echo "FAILURE: You were born in the future -_-"
     else
       current_block=$(($current_block+1))
