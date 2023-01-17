@@ -12,7 +12,7 @@ target_time=1234567890
 current_block=0
 
 clear
-echo -e "Starting the script...\n\nThe target timestamp is $target_time.\nThe target timestamp is $(date -d @$target_time).\n"
+echo -e "Starting the script...\n\nThe target timestamp is $target_time.\nThe target timestamp is $(perl -le 'print scalar localtime $ARGV[0]' $target_time).\n"
 
 echo -n "Connecting to Bitcoin Core... "
 blockchain_info=$(bitcoin-cli getblockchaininfo)
@@ -35,12 +35,12 @@ while [ $current_block -le $block_count ] && [ $current_block_time -lt $target_t
   current_block_header=$(bitcoin-cli getblockheader $current_block_hash)
   current_block_time=$(echo $current_block_header | jq -r '.time')
 
-  echo "Checking block $current_block, created $(date -d @$current_block_time)..."
+  echo "Checking block $current_block, created $(perl -le 'print scalar localtime $ARGV[0]' $current_block_time)..."
 
   if [ $current_block_time -ge $target_time ]; then
     echo -e "\nSUCCESS: Found the target block."
     echo "Timestamp $target_time was born on block $current_block."
-    echo "This block was made at $current_block_time, or $(date -d @$current_block_time)."
+    echo "This block was made at $current_block_time, or $(perl -le 'print scalar localtime $ARGV[0]' $current_block_time)."
     
     ntx=$(echo $current_block_header | jq -r '.nTx')
     echo -n "This block contains $ntx transaction"
