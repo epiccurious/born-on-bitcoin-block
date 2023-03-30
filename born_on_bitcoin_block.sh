@@ -1,16 +1,13 @@
 #!/bin/bash
-
-### Ensure either bitcoind or bitcoin-qt are running before starting this script.
-
-### Stop the script if any command throws an error.
 set -e
 
 ### Set the Unix timestamp to target. (Default: 1234567890, or Fri Feb 13 2009 23:31:30)
 target_time=1234567890
-
-### Define the starting block for the search. (Default: 0)
-
+### Define the path to bitcoin-cli. If bitcoin-cli is installed in a $PATH directory, set bitcoin_cli_path="bitcoin-cli"
 bitcoin_cli_path="${HOME}/bitcoin/bin/bitcoin-cli"
+
+### Check that either bitcoind or bitcoin-qt are running before starting this script.
+### <Code for the check goes here>
 
 clear
 echo -e "Starting the script...\n\nThe target timestamp is $target_time. (Local time is $(perl -le 'print scalar localtime $ARGV[0]' $target_time))."
